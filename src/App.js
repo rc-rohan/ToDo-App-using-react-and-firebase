@@ -1,10 +1,23 @@
-import React, { useState } from "react";
-import { Button, FormControl, InputLabel ,Input} from "@material-ui/core";
+import React, { useState, useEffect } from "react";
+import { Button, FormControl, InputLabel, Input } from "@material-ui/core";
 import "./App.css";
+import Todo from "./Todo";
+import db from "./firebase";
 
 function App() {
     const [todos, setTodos] = useState([]);
     const [input, setInput] = useState("");
+
+    // getting data from the firebase basically listener for the database
+    useEffect(() => {
+        // this code fires when the app loads
+        db.collection("todos").onSnapshot((snapshot) => {
+            console.log(snapshot.docs.map((doc) => doc.data()));
+            setTodos(snapshot.docs.map((doc) => doc.data().task));
+            //  here docs refers to the every single todo which we have in the firestore
+            // here doc.data.().task : return object and then we convert it to the array using map method
+        });
+    }, []);
 
     const addTodo = (e) => {
         e.preventDefault();
@@ -16,7 +29,6 @@ function App() {
         <div className="App">
             <h1>Hello world </h1>
             <form>
-
                 {/* Basically here we are getting the input from the input variable value and not directly */}
                 <FormControl>
                     <InputLabel>✅Add Your ToDo</InputLabel>
@@ -37,7 +49,7 @@ function App() {
             </form>
             <ul>
                 {todos.map((todo) => (
-                    <li>{todo}</li>
+                    <Todo task={todo} />
                 ))}
             </ul>
         </div>
