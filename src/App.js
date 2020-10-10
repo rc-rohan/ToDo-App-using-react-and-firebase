@@ -12,12 +12,9 @@ function App() {
     // getting data from the firebase basically listener for the database
     useEffect(() => {
         // this code fires when the app loads
-        db.collection("todos")
-            .orderBy("timestamp", "desc")
-            .onSnapshot((snapshot) => {
+        db.collection("todos").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
                 // onSnapshot i basically a type of the listener here
-                console.log(snapshot.docs.map((doc) => doc.data()));
-                setTodos(snapshot.docs.map((doc) => doc.data().todo));
+                setTodos(snapshot.docs.map((doc) => ({id: doc.id,todo:doc.data().todo})));
                 //  here docs refers to the every single todo which we have in the firestore
                 // here doc.data.().task : return object and then we convert it to the array using map method
             });
@@ -48,7 +45,9 @@ function App() {
             <form>
                 {/* Basically here we are getting the input from the input variable value and not directly */}
                 <FormControl>
-                    <InputLabel>Add Your ToDo</InputLabel>
+                    <InputLabel>
+                        <span role="img">✅</span>Add Your ToDo
+                    </InputLabel>
                     <Input
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
