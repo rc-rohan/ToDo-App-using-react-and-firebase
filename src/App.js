@@ -3,8 +3,7 @@ import { Button, FormControl, InputLabel, Input } from "@material-ui/core";
 import "./App.css";
 import Todo from "./Todo";
 import db from "./firebase";
-import firebase from 'firebase'
-
+import firebase from "firebase";
 
 function App() {
     const [todos, setTodos] = useState([]);
@@ -13,13 +12,15 @@ function App() {
     // getting data from the firebase basically listener for the database
     useEffect(() => {
         // this code fires when the app loads
-        db.collection("todos").orderBy('timestamp','desc').onSnapshot((snapshot) => {
-            // onSnapshot i basically a type of the listener here
-            console.log(snapshot.docs.map((doc) => doc.data()));
-            setTodos(snapshot.docs.map((doc) => doc.data().todo));
-            //  here docs refers to the every single todo which we have in the firestore
-            // here doc.data.().task : return object and then we convert it to the array using map method
-        });
+        db.collection("todos")
+            .orderBy("timestamp", "desc")
+            .onSnapshot((snapshot) => {
+                // onSnapshot i basically a type of the listener here
+                console.log(snapshot.docs.map((doc) => doc.data()));
+                setTodos(snapshot.docs.map((doc) => doc.data().todo));
+                //  here docs refers to the every single todo which we have in the firestore
+                // here doc.data.().task : return object and then we convert it to the array using map method
+            });
     }, []);
 
     const addTodo = (e) => {
@@ -27,7 +28,7 @@ function App() {
 
         db.collection("todos").add({
             todo: input,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
         });
         // Now as soon as we add the iput the db takes the new snapshot and then update the db in the firesotre
 
@@ -36,9 +37,6 @@ function App() {
            this line means that we are adding the firebase server inorder to sort the todos in last added first in stack
            And we can add it from anywhere and the sync in the server willl be present as we are usiing here the firebase timmestamp
         */
-
-
-
 
         setTodos([...todos, input]);
         setInput("");
@@ -50,7 +48,7 @@ function App() {
             <form>
                 {/* Basically here we are getting the input from the input variable value and not directly */}
                 <FormControl>
-                    <InputLabel>✅Add Your ToDo</InputLabel>
+                    <InputLabel>Add Your ToDo</InputLabel>
                     <Input
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
